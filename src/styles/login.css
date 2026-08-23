@@ -1,0 +1,62 @@
+/* ===== Login page ===== */
+.login-page {
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh - 72px - 200px);
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--sp-6);
+}
+
+.login-title {
+  font-size: 26px;
+  margin-top: var(--sp-3);
+}
+
+.login-subtitle {
+  margin-top: var(--sp-2);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-top: var(--sp-5);
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-top: -6px;
+}
+
+.login-submit {
+  width: 100%;
+  margin-top: var(--sp-1);
+}
+
+.login-footnote {
+  margin-top: var(--sp-5);
+  font-size: 13.5px;
+  text-align: center;
+}
+
+.login-link {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
