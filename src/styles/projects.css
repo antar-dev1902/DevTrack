@@ -1,0 +1,442 @@
+.projects-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  margin-bottom: var(--sp-6);
+  flex-wrap: wrap;
+}
+
+.projects-toolbar {
+  display: flex;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+  flex-wrap: wrap;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-5);
+}
+
+.project-card {
+  padding: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.project-card-title {
+  font-size: 18px;
+}
+
+.project-card-desc {
+  font-size: 14px;
+  min-height: 42px;
+}
+
+.project-card-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-card-progress {
+  margin-top: var(--sp-1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.project-card-progress-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-faint);
+}
+
+/* ===== Project status row (dot + label, shared by card + details) ===== */
+.project-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot-neutral {
+  border: 2px solid var(--border-strong);
+}
+
+.status-dot-progress {
+  background: var(--accent);
+}
+
+.status-dot-complete {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.project-status-neutral {
+  color: var(--text-faint);
+}
+
+.project-status-progress {
+  color: var(--accent);
+}
+
+.project-status-complete {
+  color: var(--success);
+}
+
+.project-card-xp {
+  margin-left: auto;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.project-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  font-size: 13.5px;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.project-card-meta > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.project-card-meta-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-faint);
+}
+
+.project-card-cta {
+  margin-top: var(--sp-2);
+  align-self: flex-start;
+}
+
+@media (max-width: 1080px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Project details ===== */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: var(--sp-5);
+}
+
+.back-link:hover {
+  color: var(--accent);
+}
+
+.back-link-icon {
+  transform: rotate(180deg);
+}
+
+.project-details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-6);
+}
+
+.project-details-title {
+  font-size: clamp(26px, 3.4vw, 34px);
+  margin-top: var(--sp-3);
+}
+
+.project-details-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.modal-confirm {
+  max-width: 400px;
+  text-align: center;
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.modal-confirm h3 {
+  font-size: 20px;
+}
+
+.modal-confirm p {
+  font-size: 14.5px;
+}
+
+.modal-confirm .modal-actions {
+  justify-content: center;
+  margin-top: 0;
+}
+
+.project-details-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--sp-5);
+  align-items: start;
+}
+
+.project-details-main {
+  padding: var(--sp-6);
+}
+
+.project-details-main h4 {
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  margin-top: var(--sp-5);
+  margin-bottom: var(--sp-2);
+}
+
+.project-details-main h4:first-child {
+  margin-top: 0;
+}
+
+.project-details-main p {
+  font-size: 15px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.task-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 14.5px;
+  color: var(--text);
+}
+
+.task-list li svg {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+.text-faint {
+  color: var(--text-faint);
+}
+
+.project-details-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.project-details-stat-card {
+  padding: var(--sp-4);
+}
+
+.project-details-stat-card h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  margin-bottom: var(--sp-3);
+}
+
+.project-details-progress-count {
+  margin-top: var(--sp-3);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.project-details-status-line {
+  margin-top: var(--sp-2);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.project-details-status-line strong {
+  color: var(--text);
+}
+
+@media (max-width: 900px) {
+  .project-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Project completion banner ===== */
+.project-complete-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: var(--success-soft);
+  border: 1px solid rgba(22, 163, 74, 0.3);
+  color: var(--success);
+  font-weight: 700;
+  font-size: 14.5px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--sp-5);
+}
+
+.project-complete-banner .xp-pill {
+  margin-left: auto;
+}
+
+/* ===== Interactive task list (Project details) ===== */
+.task-list-interactive {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.project-task {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: 14.5px;
+  color: var(--text);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.project-task:last-child {
+  border-bottom: none;
+}
+
+.project-task-done {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+.project-task-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--bg-card);
+  color: #ffffff;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.project-task-toggle:hover {
+  border-color: var(--accent);
+}
+
+.project-task-toggle-done,
+.project-task .project-task-toggle-done {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.project-task .project-task-toggle {
+  color: #ffffff;
+}
+
+.project-task-done .project-task-toggle {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+/* ===== Modal task builder (Add/Edit Project) ===== */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.modal-task-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.modal-task-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: 14px;
+  padding: 6px 0;
+}
+
+.modal-task-row span {
+  flex: 1;
+}
+
+.modal-task-label-done {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+.modal-task-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
+}
+
+.modal-task-remove:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.modal-task-add {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.modal-task-add .input {
+  flex: 1;
+}
