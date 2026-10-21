@@ -37,7 +37,39 @@ Because XP is computed (`completedSkills.length * 50 + completedProjects.length 
 
 ## Notes on scope
 
-This is a frontend-only build. Roadmap/project/hackathon/profile seed data lives in `src/data/`; real user state (completed skills, projects and their tasks) is held in React state lifted into `App.jsx` and persisted to `localStorage` via a small `useLocalStorage` hook, so progress survives a refresh but lives only in this browser — there's no backend, database, or real authentication. See the original PRD for the full list of what's intentionally out of scope for this evaluation (real APIs, team matching, XP levels/streaks, AI recommendations, etc.).
+This is a frontend-only build. Roadmap/project/hackathon/profile seed data lives in `src/data/`. Redux Toolkit owns completed skills, projects, and task completion; React Context owns learning preferences and a learning goal. Both persist to localStorage, so progress survives a refresh but lives only in this browser. There is no backend, database, or real authentication.
+
+## Context and Redux Toolkit
+
+State has one owner for each responsibility:
+
+| State | Owner | Used by |
+| --- | --- | --- |
+| Completed skills | Redux `progress` slice | Skills, Home, Profile |
+| Projects and tasks | Redux `projects` slice | Projects, project details, Home, Profile |
+| XP and completion counts | Redux selectors, calculated from completion | Home, Profile |
+| Preferred developer path and learning goal | `LearningPreferencesProvider`, accessed with `useLearningPreferences()` | Home, Skills |
+| Form drafts, validation errors, open dialogs, search text | Local `useState` | The component displaying the UI |
+| Skill being viewed | Skills URL query, e.g. `/skills?skill=fe-react` | Skills and resume links |
+
+`main.jsx` wraps the app with React-Redux's `Provider` and `LearningPreferencesProvider`. `App.jsx` handles routes; it no longer owns progress or project state.
+
+Clicking **Mark Skill Complete** dispatches `skillCompleted(skillId)`. The progress reducer adds a known skill only once. Selectors calculate skill XP, project XP, and the total. Project actions are `projectAdded`, `projectUpdated`, `projectDeleted`, and `projectTaskToggled`. Redux DevTools is enabled in development.
+
+Choosing a path calls Context's `setPreferredPath()`. Saving the validated learning-goal form calls `saveGoal()`. The goal and preferred path appear on Home as well as Skills. Goal completion is derived from Redux's completed skills; Context does not maintain a duplicate completion flag. `clearGoal()` removes the goal while preserving the preferred path.
+
+The Redux migration reads the existing `devtrack_skills` and `devtrack_projects` keys without resetting valid saved progress, including empty arrays. `devtrack_xp` remains an inspectable mirror, never an XP source. Context uses a separate `devtrack_learning_preferences` key. State updates continue in memory when storage is blocked or full.
+
+### Evaluation walkthrough
+
+1. Choose Backend on Skills, then open Home: its learning card shows Backend.
+2. Set a skill and a target date using **Set learning goal**. The same goal appears on both pages and survives a refresh.
+3. Submit an empty or past target date to demonstrate field validation and accessible error feedback.
+4. Complete the goal's skill: the goal displays **Completed**, and total XP increases by 50 on Home and Profile.
+5. Create a project, edit it, and toggle its tasks. Completing every task contributes 100 XP; unchecking a task removes that contribution.
+6. Inspect the named progress/project actions and state changes in Redux DevTools.
+
+Run the migration, persistence, XP, project workflow, and goal-validation checks with `npm test`.
 
 ## Structure
 
@@ -46,6 +78,8 @@ src/
 ├── pages/        one file per route
 ├── components/   reusable UI (Navbar, RoadmapNode, ProjectCard, Leaderboard, ...)
 ├── data/         static roadmap/projects/hackathons/profile + leaderboard data
+├── context/      learning preferences provider, consumer hook, goal validation
+├── store/        Redux slices, selectors, store and localStorage persistence
 ├── hooks/        useLocalStorage
 └── styles/       global.css (design tokens + shared components) + one CSS file per page
 ```

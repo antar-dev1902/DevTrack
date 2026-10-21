@@ -1,4 +1,7 @@
 import { useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectProjects } from '../store/selectors.js';
+import { projectAdded } from '../store/projectsSlice.js';
 import Icon from '../components/icons/ImageIcon.jsx';
 import SearchBar from '../components/SearchBar.jsx';
 import FilterBar from '../components/FilterBar.jsx';
@@ -13,7 +16,9 @@ const filterOptions = [
   { value: 'Completed', label: 'Completed' },
 ];
 
-export default function Projects({ projects, onAdd }) {
+export default function Projects() {
+  const projects = useSelector(selectProjects);
+  const dispatch = useDispatch();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('All');
   const [modalOpen, setModalOpen] = useState(false);
@@ -32,7 +37,7 @@ export default function Projects({ projects, onAdd }) {
   }, [projects, query, status]);
 
   const handleSave = (data) => {
-    onAdd(data);
+    dispatch(projectAdded(data));
     setModalOpen(false);
   };
 

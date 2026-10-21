@@ -1,276 +1,370 @@
-.learn-page {
-  padding-top: var(--sp-7);
+.learn-page.section {
+  padding: 40px 0 64px;
 }
 
-/* Path selector */
-.path-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-3);
-  margin-bottom: var(--sp-6);
+.learn-page .learn-header {
+  margin-bottom: 28px;
 }
 
-.path-chip {
-  display: flex;
+.learn-page .learn-eyebrow {
+  display: inline-flex;
   align-items: center;
-  gap: var(--sp-3);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 10px 16px;
-  color: var(--text-dim);
-  transition: border-color 0.18s ease, transform 0.18s ease, color 0.18s ease;
+  gap: 7px;
+  color: var(--accent-hover);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.path-chip:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-2px);
+.learn-page .learn-header h1 {
+  margin: 10px 0;
+  font-size: clamp(28px, 3.5vw, 38px);
+  letter-spacing: -0.035em;
 }
 
-.path-chip-active {
-  border-color: var(--accent);
-  color: var(--text);
-  background: var(--accent-soft);
+.learn-page .learn-header p {
+  font-size: 15px;
 }
 
-.path-chip-icon {
+/* Compact path navigation; horizontally scrollable on small screens. */
+.learn-page .path-selector {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 12px;
+  margin: -2px -2px 12px;
+}
+
+.learn-page .path-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-elevated);
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
   color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.path-chip-active .path-chip-icon {
-  background: var(--accent);
-  color: #ffffff;
+.learn-page .path-chip:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-card-hover);
 }
 
-.path-chip-text {
+.learn-page .path-chip-active,
+.learn-page .path-chip-active:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: #b94705;
+}
+
+/* One progress summary, derived from completed skills in this path. */
+.learn-page .path-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+  align-items: center;
+  gap: 32px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.learn-page .path-overview h2 {
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.learn-page .path-overview-copy p {
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.learn-page .path-progress-caption {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  color: var(--text-dim);
+  font-size: 12px;
 }
 
-.path-chip-name {
-  font-size: 13.5px;
-  font-weight: 700;
+.learn-page .path-progress-caption strong {
   color: var(--text);
+  font-weight: 700;
 }
 
-.path-chip-progress {
-  font-size: 11.5px;
-  color: var(--text-faint);
+.learn-page .path-progress-caption > strong {
+  color: var(--accent-hover);
   font-family: var(--font-mono);
 }
 
-/* Two-column layout: roadmap + skill panel */
-.learn-grid {
+.learn-page .path-overview .progress-track {
+  height: 7px;
+  border: none;
+}
+
+/* Skills on the left, learning details on the right. */
+.learn-page .learn-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-  gap: var(--sp-6);
+  grid-template-columns: minmax(250px, 0.85fr) minmax(0, 2fr);
+  gap: 24px;
   align-items: start;
 }
 
-.roadmap-panel {
-  padding: var(--sp-5);
-}
-
-.roadmap-panel-header {
-  margin-bottom: var(--sp-5);
-}
-
-.roadmap-panel-eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--accent);
-}
-
-.roadmap-panel-header p {
-  margin-top: var(--sp-2);
-  font-size: 14.5px;
-}
-
-.roadmap-chain {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Skill details panel */
-.skill-panel {
-  padding: var(--sp-5);
+.learn-page .roadmap-panel {
+  padding: 18px 12px 12px;
   position: sticky;
   top: 96px;
 }
 
-.skill-panel-empty {
+.learn-page .roadmap-panel-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: var(--sp-3);
-  text-align: center;
-  padding: var(--sp-8) var(--sp-5);
-  color: var(--text-faint);
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 8px 16px;
 }
 
-.skill-panel-title {
-  font-size: 24px;
-  margin-top: var(--sp-3);
+.learn-page .roadmap-panel-header h2 {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
-.skill-panel-desc {
-  margin-top: var(--sp-3);
-  font-size: 14.5px;
+.learn-page .roadmap-panel-header > span {
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
 }
 
-.skill-panel-progress {
-  margin-top: var(--sp-5);
+.learn-page .roadmap-chain {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-faint);
+  gap: 6px;
 }
 
-.skill-panel-modules,
-.skill-panel-resources {
-  margin-top: var(--sp-5);
-  padding-top: var(--sp-5);
+.learn-page .roadmap-node {
+  min-height: 58px;
+  padding: 12px 10px;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  opacity: 1;
+  animation: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.learn-page .roadmap-node:hover {
+  transform: none;
+  background: var(--bg-elevated);
+  border-color: transparent;
+}
+
+.learn-page .roadmap-node-selected,
+.learn-page .roadmap-node-selected:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.learn-page .roadmap-node-marker {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 7px;
+  background: var(--bg-elevated);
+  color: var(--text-dim);
+  font: 600 10px var(--font-mono);
+}
+
+.learn-page .roadmap-node-completed .roadmap-node-marker {
+  background: var(--success-soft);
+  color: #15803d;
+}
+
+.learn-page .roadmap-node-current .roadmap-node-marker {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+.learn-page .roadmap-node-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.learn-page .roadmap-node-tag {
+  font-size: 9px;
+  color: #b94705;
+  background: var(--accent-soft);
+  padding: 4px 6px;
+  border-radius: 4px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* A readable learning outline, without module status or cosmetic progress. */
+.learn-page .skill-panel {
+  padding: 28px;
+  min-width: 0;
+}
+
+.learn-page .skill-panel-eyebrow {
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.learn-page .skill-panel-header h2 {
+  margin-top: 8px;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.learn-page .skill-panel-header p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.learn-page .skill-panel-section {
+  margin-top: 24px;
+  padding-top: 24px;
   border-top: 1px solid var(--border);
 }
 
-.skill-panel-modules h4,
-.skill-panel-resources h4 {
-  font-size: 12.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-faint);
-  margin-bottom: var(--sp-3);
-}
-
-.module-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-
-.module-item {
+.learn-page .skill-panel-section h3 {
+  margin-bottom: 16px;
   font-size: 14px;
-  color: var(--text-faint);
-  padding-bottom: var(--sp-3);
-  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  line-height: 1.4;
 }
 
-.module-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+.learn-page .module-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 28px;
 }
 
-.module-item-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-}
-
-.module-item-name {
-  font-weight: 600;
-}
-
-.module-item-desc {
-  margin: 6px 0 0 22px;
+.learn-page .module-item h4 {
   font-size: 13px;
-  color: var(--text-faint);
-  font-weight: 400;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
-.module-item-completed {
-  color: var(--text-dim);
+.learn-page .module-item p {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.7;
 }
 
-.module-item-completed svg {
-  color: var(--success);
-}
-
-.module-item-current .module-item-name {
-  color: var(--text);
-}
-
-.module-item-current svg {
-  color: var(--accent-2, var(--accent));
-}
-
-.skill-panel-resources ul {
+.learn-page .skill-resource-list {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
-  font-size: 13.5px;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.skill-panel-resources a {
+.learn-page .skill-resource-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: var(--accent);
+  gap: 8px;
+  color: #b94705;
+  font-size: 13px;
   font-weight: 600;
 }
 
-.skill-panel-resources a:hover {
+.learn-page .skill-resource-link:hover {
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.skill-panel-project {
-  margin-top: var(--sp-5);
+.learn-page .skill-resource-link .icon {
+  flex-shrink: 0;
+}
+
+.learn-page .skill-panel-project {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-strong);
-  font-size: 13.5px;
+  background: var(--bg-card-hover);
+  font-size: 13px;
   font-weight: 600;
-  transition: border-color 0.18s ease, color 0.18s ease;
+  transition: border-color 0.15s ease;
 }
 
-.skill-panel-project:hover {
+.learn-page .skill-panel-project:hover {
   border-color: var(--accent);
-  color: var(--accent);
 }
 
-.skill-panel-project svg:last-child {
+.learn-page .skill-project-icon {
+  display: inline-flex;
+  color: var(--accent-hover);
+}
+
+.learn-page .skill-panel-project > .icon {
   margin-left: auto;
 }
 
-/* Mark skill complete / completed state */
-.skill-panel-complete {
-  margin-top: var(--sp-5);
-  padding-top: var(--sp-5);
+.learn-page .skill-panel-complete {
+  margin-top: 24px;
+  padding-top: 24px;
   border-top: 1px solid var(--border);
 }
 
-.skill-complete-btn {
+.learn-page .skill-complete-btn {
   width: 100%;
+  min-height: 48px;
+  font-size: 14px;
 }
 
-.skill-complete-badge {
+.learn-page .skill-complete-btn > span {
+  margin-left: auto;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  font-size: 11px;
+}
+
+.learn-page .skill-complete-badge {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
-  width: 100%;
-  padding: 13px 20px;
-  border-radius: var(--radius-sm);
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid rgba(22, 163, 74, 0.25);
+  border-radius: var(--radius-md);
   background: var(--success-soft);
-  border: 1px solid rgba(22, 163, 74, 0.3);
-  color: var(--success);
-  font-size: 14.5px;
-  font-weight: 700;
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 600;
 }
 
+.learn-page .skill-complete-badge strong {
+  margin-left: auto;
+  font-size: 11px;
+}
+
+/* Retained for the existing project completion UI that also uses these pills. */
 .xp-pill {
   margin-left: auto;
   display: inline-flex;
@@ -288,12 +382,59 @@
   color: #ffffff;
 }
 
-@media (max-width: 980px) {
-  .learn-grid {
+@media (max-width: 800px) {
+  .learn-page .path-overview {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .learn-page .learn-grid {
     grid-template-columns: 1fr;
   }
 
-  .skill-panel {
+  .learn-page .roadmap-panel {
     position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .learn-page.section {
+    padding: 28px 0 40px;
+  }
+
+  .learn-page .learn-header {
+    margin-bottom: 24px;
+  }
+
+  .learn-page .learn-header p {
+    font-size: 14px;
+  }
+
+  .learn-page .path-chip {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .learn-page .path-overview,
+  .learn-page .skill-panel {
+    padding: 20px;
+  }
+
+  .learn-page .path-overview {
+    margin-bottom: 16px;
+  }
+
+  .learn-page .learn-grid {
+    gap: 16px;
+  }
+
+  .learn-page .module-list {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .learn-page .skill-complete-btn {
+    padding: 12px 16px;
+    font-size: 13px;
   }
 }

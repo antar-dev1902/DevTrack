@@ -1,29 +1,21 @@
 import Icon from './icons/ImageIcon.jsx';
-import { getPathProgress } from '../data/roadmapData.js';
 
-export default function PathSelector({ paths, selectedId, onSelect, completedSkillIds }) {
+export default function PathSelector({ paths, selectedId, onSelect }) {
   return (
-    <div className="path-selector">
-      {paths.map((path) => {
-        const active = path.id === selectedId;
-        const progress = getPathProgress(path, completedSkillIds);
-        return (
-          <button
-            key={path.id}
-            type="button"
-            className={`path-chip ${active ? 'path-chip-active' : ''}`}
-            onClick={() => onSelect(path.id)}
-          >
-            <span className="path-chip-icon">
-              <Icon name={path.icon} size={16} />
-            </span>
-            <span className="path-chip-text">
-              <span className="path-chip-name">{path.name}</span>
-              <span className="path-chip-progress">{progress}% complete</span>
-            </span>
-          </button>
-        );
-      })}
-    </div>
+    <nav className="path-selector" aria-label="Developer paths">
+      {paths.map((path) => (
+        <button
+          key={path.id}
+          type="button"
+          className={`path-chip ${path.id === selectedId ? 'path-chip-active' : ''}`}
+          aria-label={path.name}
+          aria-pressed={path.id === selectedId}
+          onClick={() => onSelect(path.id)}
+        >
+          <Icon name={path.icon} size={16} />
+          {path.name.replace(' Developer', '')}
+        </button>
+      ))}
+    </nav>
   );
 }
