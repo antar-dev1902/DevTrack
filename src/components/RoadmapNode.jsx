@@ -1,26 +1,20 @@
 import Icon from './icons/ImageIcon.jsx';
 
-// status: 'completed' | 'current' | 'upcoming'
-export default function RoadmapNode({ label, sublabel, status = 'upcoming', onClick, selected, style }) {
-  const Tag = onClick ? 'button' : 'div';
-
+export default function RoadmapNode({ label, number, status = 'upcoming', onClick, selected }) {
   return (
-    <Tag
+    <button
+      type="button"
       className={`roadmap-node roadmap-node-${status} ${selected ? 'roadmap-node-selected' : ''}`}
       onClick={onClick}
-      style={style}
-      type={onClick ? 'button' : undefined}
+      aria-pressed={selected}
+      aria-current={status === 'current' ? 'step' : undefined}
+      aria-label={`${label}${status === 'completed' ? ', completed' : status === 'current' ? ', current skill' : ''}`}
     >
-      <span className="roadmap-node-marker">
-        {status === 'completed' && <Icon name="check" size={14} />}
-        {status === 'current' && <span className="roadmap-node-dot" />}
-        {status === 'upcoming' && <Icon name="lock" size={12} />}
+      <span className="roadmap-node-marker" aria-hidden="true">
+        {status === 'completed' ? <Icon name="check" size={14} /> : String(number).padStart(2, '0')}
       </span>
-      <span className="roadmap-node-text">
-        <span className="roadmap-node-label">{label}</span>
-        {sublabel && <span className="roadmap-node-sublabel">{sublabel}</span>}
-      </span>
+      <span className="roadmap-node-label">{label}</span>
       {status === 'current' && <span className="roadmap-node-tag">Current</span>}
-    </Tag>
+    </button>
   );
 }

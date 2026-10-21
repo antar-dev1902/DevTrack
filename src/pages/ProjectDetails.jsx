@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectProjects } from '../store/selectors.js';
+import { projectUpdated, projectDeleted, projectTaskToggled } from '../store/projectsSlice.js';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Icon from '../components/icons/ImageIcon.jsx';
 import ProgressBar from '../components/ProgressBar.jsx';
@@ -13,7 +16,9 @@ const statusClass = {
   'Not Started': '',
 };
 
-export default function ProjectDetails({ projects, onUpdate, onDelete, onToggleTask }) {
+export default function ProjectDetails() {
+  const projects = useSelector(selectProjects);
+  const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
@@ -40,12 +45,12 @@ export default function ProjectDetails({ projects, onUpdate, onDelete, onToggleT
   const currentTask = project.tasks.find((t) => !t.completed);
 
   const handleSave = (data) => {
-    onUpdate(project.id, data);
+    dispatch(projectUpdated({ id: project.id, changes: data }));
     setEditing(false);
   };
 
   const handleDelete = () => {
-    onDelete(project.id);
+    dispatch(projectDeleted(project.id));
     navigate('/projects');
   };
 
@@ -98,7 +103,7 @@ export default function ProjectDetails({ projects, onUpdate, onDelete, onToggleT
             {project.tasks.length > 0 ? (
               <ul className="task-list-interactive">
                 {project.tasks.map((t) => (
-                  <ProjectTask key={t.id} task={t} onToggle={() => onToggleTask(project.id, t.id)} />
+                  <ProjectTask key={t.id} task={t} onToggle={() => dispatch(projectTaskToggled({ projectId: project.id, taskId: t.id }))} />
                 ))}
               </ul>
             ) : (

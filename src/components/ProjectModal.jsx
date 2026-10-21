@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { nanoid } from '@reduxjs/toolkit';
 import Icon from './icons/ImageIcon.jsx';
 
 const emptyForm = {
@@ -9,10 +10,8 @@ const emptyForm = {
   nextStep: '',
 };
 
-let taskKeyCounter = 0;
 function nextTaskId() {
-  taskKeyCounter += 1;
-  return `new-${taskKeyCounter}`;
+  return `task-${nanoid()}`;
 }
 
 export default function ProjectModal({ project, onClose, onSave }) {

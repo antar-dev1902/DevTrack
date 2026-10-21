@@ -1,4 +1,6 @@
 import Icon from '../components/icons/ImageIcon.jsx';
+import { useSelector } from 'react-redux';
+import { selectTotalXp, selectSkillXp, selectProjectXp, selectCompletedSkillCount, selectCompletedProjectsCount } from '../store/selectors.js';
 import ProfileCard from '../components/ProfileCard.jsx';
 import Leaderboard from '../components/Leaderboard.jsx';
 import profileData from '../data/profileData.js';
@@ -7,7 +9,12 @@ import '../styles/profile.css';
 
 const TOTAL_SKILLS = Object.keys(skills).length;
 
-export default function Profile({ totalXp, skillXp, projectXp, completedSkillCount, completedProjectsCount }) {
+export default function Profile() {
+  const totalXp = useSelector(selectTotalXp);
+  const skillXp = useSelector(selectSkillXp);
+  const projectXp = useSelector(selectProjectXp);
+  const completedSkillCount = useSelector(selectCompletedSkillCount);
+  const completedProjectsCount = useSelector(selectCompletedProjectsCount);
   const journeyProgress = Math.round((completedSkillCount / TOTAL_SKILLS) * 100);
 
   return (
