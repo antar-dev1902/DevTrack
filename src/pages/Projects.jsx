@@ -16,12 +16,15 @@ const filterOptions = [
   { value: 'Completed', label: 'Completed' },
 ];
 
+const ITEMS_PER_PAGE = 6;
+
 export default function Projects() {
   const projects = useSelector(selectProjects);
   const dispatch = useDispatch();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('All');
   const [modalOpen, setModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filtered = useMemo(() => {
     return projects.filter((p) => {
@@ -35,6 +38,24 @@ export default function Projects() {
       return matchesStatus && matchesQuery;
     });
   }, [projects, query, status]);
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+  const safeCurrentPage = Math.min(Math.max(currentPage, 1), totalPages);
+
+  const paginatedProjects = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+    return filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filtered, safeCurrentPage]);
+
+  const handleQueryChange = (val) => {
+    setQuery(val);
+    setCurrentPage(1);
+  };
+
+  const handleStatusChange = (val) => {
+    setStatus(val);
+    setCurrentPage(1);
+  };
 
   const handleSave = (data) => {
     dispatch(projectAdded(data));
@@ -61,8 +82,8 @@ export default function Projects() {
 
         {projects.length > 0 && (
           <div className="projects-toolbar">
-            <SearchBar value={query} onChange={setQuery} placeholder="Search projects..." />
-            <FilterBar options={filterOptions} active={status} onChange={setStatus} />
+            <SearchBar value={query} onChange={handleQueryChange} placeholder="Search projects..." />
+            <FilterBar options={filterOptions} active={status} onChange={handleStatusChange} />
           </div>
         )}
 
@@ -77,11 +98,70 @@ export default function Projects() {
             </button>
           </div>
         ) : filtered.length > 0 ? (
-          <div className="projects-grid">
-            {filtered.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
+          <>
+            <div className="projects-grid">
+              {paginatedProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div
+                className="pagination"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginTop: 'var(--sp-7)',
+                  flexWrap: 'wrap',
+                }}
+                aria-label="Projects pagination"
+              >
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-small"
+                  disabled={safeCurrentPage === 1}
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  style={{
+                    opacity: safeCurrentPage === 1 ? 0.45 : 1,
+                    cursor: safeCurrentPage === 1 ? 'not-allowed' : 'pointer',
+                  }}
+                  aria-label="Previous page"
+                >
+                  Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    className={`btn btn-small ${pageNum === safeCurrentPage ? 'btn-primary' : 'btn-secondary'}`}
+                    onClick={() => setCurrentPage(pageNum)}
+                    style={{ minWidth: '38px', padding: '8px 14px' }}
+                    aria-current={pageNum === safeCurrentPage ? 'page' : undefined}
+                    aria-label={`Page ${pageNum}`}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-small"
+                  disabled={safeCurrentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                  style={{
+                    opacity: safeCurrentPage === totalPages ? 0.45 : 1,
+                    cursor: safeCurrentPage === totalPages ? 'not-allowed' : 'pointer',
+                  }}
+                  aria-label="Next page"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="empty-state card">
             <Icon name="search" size={22} />

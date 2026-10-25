@@ -69,6 +69,8 @@ The Redux migration reads the existing `devtrack_skills` and `devtrack_projects`
 5. Create a project, edit it, and toggle its tasks. Completing every task contributes 100 XP; unchecking a task removes that contribution.
 6. Inspect the named progress/project actions and state changes in Redux DevTools.
 
+Run the migration, persistence, XP, project workflow, and goal-validation checks with `npm test`.
+
 ## Structure
 
 ```

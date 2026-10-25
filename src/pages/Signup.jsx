@@ -3,35 +3,78 @@ import { useNavigate, Link } from 'react-router-dom';
 import Icon from '../components/icons/ImageIcon.jsx';
 import '../styles/login.css';
 
-// Same no-backend scope as Login: nothing is actually registered anywhere.
-// This exists so the "Don't have an account? Sign up" flow goes somewhere
-// real instead of looping back to the login form. Submitting does basic
-// client-side validation (name/email/password present, passwords match)
-// then drops you into the app at /profile, same landing point as Login.
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Signup() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const errs = {};
+    if (!name.trim()) {
+      errs.name = 'Full name is required.';
+    }
+
+    if (!email.trim()) {
+      errs.email = 'Email is required.';
+    } else if (!EMAIL_REGEX.test(email.trim())) {
+      errs.email = 'Please enter a valid email address.';
+    }
+
+    if (!password.trim()) {
+      errs.password = 'Password is required.';
+    } else if (password.length < 6) {
+      errs.password = 'Password must be at least 6 characters.';
+    }
+
+    if (!confirmPassword.trim()) {
+      errs.confirmPassword = 'Confirm password is required.';
+    } else if (password !== confirmPassword) {
+      errs.confirmPassword = 'Passwords do not match.';
+    }
+    return errs;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || !password.trim()) {
-      setError('Fill in your name, email, and password to continue.');
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
-      return;
+    setErrors({});
+
+    const formattedName = name.trim();
+    const initials = formattedName.charAt(0).toUpperCase() || 'U';
+    const userId = `u-${Date.now()}`;
+    const newUser = {
+      id: userId,
+      email: email.trim(),
+      name: formattedName,
+      developerPath: 'Frontend Developer',
+      bio: `${formattedName}’s developer journey — learning and building on DevTrack.`,
+      avatarInitials: initials,
+      skills: ['React', 'JavaScript', 'HTML', 'CSS'],
+      hackathonsCount: 0,
+      github: 'https://github.com/',
+      linkedin: 'https://linkedin.com/',
+    };
+
+    try {
+      const existing = JSON.parse(localStorage.getItem('devtrack_users') || '[]');
+      existing.push(newUser);
+      localStorage.setItem('devtrack_users', JSON.stringify(existing));
+      localStorage.setItem('devtrack_current_user', JSON.stringify(newUser));
+      localStorage.setItem('devtrack_current_user_id', newUser.id);
+    } catch {
+      // storage unavailable
     }
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-    setError('');
-    navigate('/profile');
+
+    navigate(`/profile?userId=${newUser.id}`);
   };
 
   return (
@@ -44,11 +87,10 @@ export default function Signup() {
           </span>
           <h2 className="login-title">Create your DevTrack account</h2>
           <p className="login-subtitle">
-            Start tracking skills, projects, and XP. This is a demo signup for the evaluation
-            build — nothing is actually stored on a server or sent anywhere.
+            Start tracking skills, projects, and XP. Fill in your details below to set up your personal profile.
           </p>
 
-          <form className="login-form" onSubmit={handleSubmit}>
+          <form className="login-form" onSubmit={handleSubmit} noValidate>
             <div>
               <label htmlFor="signup-name">Full name</label>
               <input
@@ -57,9 +99,17 @@ export default function Signup() {
                 className="input"
                 placeholder="Jordan Lee"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (errors.name) setErrors((prev) => ({ ...prev, name: '' }));
+                }}
                 autoComplete="name"
               />
+              {errors.name && (
+                <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
+                  {errors.name}
+                </p>
+              )}
             </div>
 
             <div>
@@ -70,9 +120,17 @@ export default function Signup() {
                 className="input"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+                }}
                 autoComplete="email"
               />
+              {errors.email && (
+                <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div>
@@ -83,9 +141,17 @@ export default function Signup() {
                 className="input"
                 placeholder="At least 6 characters"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) setErrors((prev) => ({ ...prev, password: '' }));
+                }}
                 autoComplete="new-password"
               />
+              {errors.password && (
+                <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             <div>
@@ -96,12 +162,18 @@ export default function Signup() {
                 className="input"
                 placeholder="••••••••"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: '' }));
+                }}
                 autoComplete="new-password"
               />
+              {errors.confirmPassword && (
+                <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
-
-            {error && <p className="login-error">{error}</p>}
 
             <button type="submit" className="btn btn-primary login-submit">
               Create Account
