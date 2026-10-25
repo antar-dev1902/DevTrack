@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insights — Expense Manager Pro</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="index.html" class="nav-brand">💰 Expense Manager</a>
+    <ul class="nav-links">
+        <li><a href="index.html"        class="nav-link">🏠 Home</a></li>
+        <li><a href="transactions.html" class="nav-link">📋 Transactions</a></li>
+        <li><a href="insights.html"     class="nav-link active">📊 Insights</a></li>
+        <li><a href="budget.html"       class="nav-link">💼 Budget</a></li>
+        <li><a href="calendar.html"     class="nav-link">📅 Calendar</a></li>
+        <li><a href="signup.html"       class="nav-link">🔐 Sign Up</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div style="text-align:center;"><span class="page-badge">Analytics</span></div>
+    <h1>📊 Spending Insights</h1>
+    <p class="section-sub">Understand where your money goes</p>
+
+    <!-- Key Metrics -->
+    <div class="insights">
+        <div class="insight-box">
+            <h4>🏆 Highest Expense</h4>
+            <p id="insight-highest">-</p>
+            <p id="insight-highest-val" style="font-size:13px; color:#ff4d4d; margin-top:4px;">-</p>
+        </div>
+        <div class="insight-box">
+            <h4>📉 Lowest Expense</h4>
+            <p id="insight-lowest">-</p>
+            <p id="insight-lowest-val" style="font-size:13px; color:#00ffcc; margin-top:4px;">-</p>
+        </div>
+        <div class="insight-box">
+            <h4>🔁 Most Frequent</h4>
+            <p id="insight-frequent">-</p>
+            <p id="insight-frequent-val" style="font-size:13px; color:#ffaa00; margin-top:4px;">-</p>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Spending Bar Chart (CSS only) -->
+    <h2>📈 Spending by Category</h2>
+    <p class="section-sub">Visual breakdown of your expenses</p>
+
+    <div class="chart-wrap" style="padding:15px; height:320px;"><canvas id="expenseChart"></canvas></div>
+            <span class="chart-val">₹8,000</span>
+        </div>
+        <div class="chart-row">
+            <span class="chart-label">🛍️ Shopping</span>
+            <div class="chart-bar-bg">
+                <div class="chart-bar-fill" style="width: 55%; background: linear-gradient(90deg,#ff00cc,#ff6b6b);"></div>
+            </div>
+            <span class="chart-val">₹1,200</span>
+        </div>
+        <div class="chart-row">
+            <span class="chart-label">⚡ Electricity</span>
+            <div class="chart-bar-bg">
+                <div class="chart-bar-fill" style="width: 45%; background: linear-gradient(90deg,#ffaa00,#ff9800);"></div>
+            </div>
+            <span class="chart-val">₹650</span>
+        </div>
+        <div class="chart-row">
+            <span class="chart-label">🍔 Food</span>
+            <div class="chart-bar-bg">
+                <div class="chart-bar-fill" style="width: 38%; background: linear-gradient(90deg,#ff9800,#ffd740);"></div>
+            </div>
+            <span class="chart-val">₹500</span>
+        </div>
+        <div class="chart-row">
+            <span class="chart-label">🎬 Entertainment</span>
+            <div class="chart-bar-bg">
+                <div class="chart-bar-fill" style="width: 20%; background: linear-gradient(90deg,#e91e63,#ff5722);"></div>
+            </div>
+            <span class="chart-val">₹199</span>
+        </div>
+        <div class="chart-row">
+            <span class="chart-label">💊 Health</span>
+            <div class="chart-bar-bg">
+                <div class="chart-bar-fill" style="width: 15%; background: linear-gradient(90deg,#4caf50,#00ffcc);"></div>
+            </div>
+            <span class="chart-val">₹300</span>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Expense Breakdown Cards -->
+    <h2>🗂️ Category Breakdown</h2>
+    <div class="breakdown" id="category-breakdown"></div>
+        <div class="break-box entertainment">
+            <h4>🎬 Entertainment</h4>
+            <p>₹199</p>
+            <p style="font-size:12px; color:rgba(255,255,255,0.45); margin-top:4px;">1.9% of expenses</p>
+        </div>
+        <div class="break-box health">
+            <h4>💊 Health</h4>
+            <p>₹300</p>
+            <p style="font-size:12px; color:rgba(255,255,255,0.45); margin-top:4px;">2.8% of expenses</p>
+        </div>
+        <div class="break-box household">
+            <h4>🏠 Household</h4>
+            <p>₹8,650</p>
+            <p style="font-size:12px; color:rgba(255,255,255,0.45); margin-top:4px;">81.4% of expenses</p>
+        </div>
+        <div class="break-box investment-cat">
+            <h4>📈 Shopping</h4>
+            <p>₹1,200</p>
+            <p style="font-size:12px; color:rgba(255,255,255,0.45); margin-top:4px;">11.3% of expenses</p>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Investment Suggestions -->
+    <h2>📈 Investment Suggestions</h2>
+    <p class="section-sub">Based on your remaining balance of ₹3,300</p>
+
+    <div class="investments">
+        <div class="invest-box safe">
+            <h4>🏦 FD</h4>
+            <p class="tag">Safe Risk</p>
+            <p class="rate">5–7%</p>
+            <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:6px;">Fixed Deposit</p>
+        </div>
+        <div class="invest-box medium">
+            <h4>📊 Mutual Funds</h4>
+            <p class="tag">Medium Risk</p>
+            <p class="rate">10–15%</p>
+            <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:6px;">Diversified Portfolio</p>
+        </div>
+        <div class="invest-box high">
+            <h4>📉 Stocks</h4>
+            <p class="tag">High Risk</p>
+            <p class="rate">15–25%</p>
+            <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:6px;">Equity Market</p>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

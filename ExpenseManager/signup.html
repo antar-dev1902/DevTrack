@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — Expense Manager Pro</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="index.html" class="nav-brand">💰 Expense Manager</a>
+    <ul class="nav-links">
+        <li><a href="index.html"        class="nav-link">🏠 Home</a></li>
+        <li><a href="transactions.html" class="nav-link">📋 Transactions</a></li>
+        <li><a href="insights.html"     class="nav-link">📊 Insights</a></li>
+        <li><a href="budget.html"       class="nav-link">💼 Budget</a></li>
+        <li><a href="calendar.html"     class="nav-link">📅 Calendar</a></li>
+        <li><a href="signup.html"       class="nav-link active">🔐 Sign Up</a></li>
+    </ul>
+</nav>
+
+<!-- Signup Card -->
+<div class="auth-wrap">
+    <div style="text-align:center; margin-bottom: 8px;">
+        <span class="page-badge">Create Account</span>
+    </div>
+    <h1>Join Expense Manager</h1>
+    <p class="sub">Track your money. Build your future. 🚀</p>
+
+    <div class="input-group">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" placeholder="e.g. Rahul Sharma">
+    </div>
+
+    <div class="input-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com">
+    </div>
+
+    <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create a strong password">
+    </div>
+
+    <div class="input-group">
+        <label for="confirm">Confirm Password</label>
+        <input type="password" id="confirm" placeholder="Re-enter password">
+    </div>
+
+    <div class="input-group" style="margin-top: 6px;">
+        <label for="currency">Preferred Currency</label>
+        <input type="text" id="currency" placeholder="e.g. ₹ INR">
+    </div>
+
+    <div class="input-group" style="margin-top: 6px;">
+        <label for="income">Monthly Income (Optional)</label>
+        <input type="number" id="income" placeholder="e.g. 50000">
+    </div>
+
+    <button id="btn-signup" style="margin-top: 20px;">✅ Create My Account</button>
+
+    <div class="or-divider">or</div>
+
+    <a href="index.html" class="btn" style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); font-weight: 500; font-size: 14px;">
+        👁️ Continue as Guest
+    </a>
+
+    <div class="auth-footer">
+        Already have an account? <a href="login.html">Log In</a>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home — Expense Manager Pro</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="index.html" class="nav-brand">💰 Expense Manager</a>
+    <ul class="nav-links">
+        <li><a href="index.html"        class="nav-link active">🏠 Home</a></li>
+        <li><a href="transactions.html" class="nav-link">📋 Transactions</a></li>
+        <li><a href="insights.html"     class="nav-link">📊 Insights</a></li>
+        <li><a href="budget.html"       class="nav-link">💼 Budget</a></li>
+        <li><a href="calendar.html"     class="nav-link">📅 Calendar</a></li>
+        <li><a href="signup.html"       class="nav-link">🔐 Sign Up</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div style="text-align:center;"><span class="page-badge">Dashboard</span></div>
+    <h1>💰 Expense Manager Pro</h1>
+    <p class="section-sub">Your personal finance overview</p>
+
+    <!-- Summary -->
+    <div class="summary">
+        <div class="box income">
+            <h3>💚 Total Income</h3>
+            <p id="home-total-income">₹0</p>
+        </div>
+        <div class="box expense">
+            <h3>❤️ Total Expense</h3>
+            <p id="home-total-expense">₹0</p>
+        </div>
+        <div class="box balance">
+            <h3>💙 Balance</h3>
+            <p id="home-balance">₹0</p>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Quick Add -->
+    <h2>➕ Quick Add Transaction</h2>
+    <p class="section-sub">Add a new income or expense entry</p>
+    <input type="text" id="quick-desc" placeholder="Description (e.g. Grocery)">
+    <input type="number" id="quick-amount" placeholder="Amount (₹)">
+    <button id="btn-quick-add">➕ Add Transaction</button>
+
+    <hr class="divider">
+
+    <!-- Recent Transactions Preview -->
+    <h2>🕐 Recent Transactions</h2>
+    <p class="section-sub">Your last few entries at a glance</p>
+    <ul class="tx-list" id="home-tx-list"></ul>
+    <a href="transactions.html" class="btn" style="margin-top: 16px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); font-weight: 500; font-size: 14px;">
+        📋 View All Transactions →
+    </a>
+
+    <hr class="divider">
+
+    <!-- Navigation Cards -->
+    <h2>🧭 Quick Navigation</h2>
+    <div class="breakdown">
+        <a href="transactions.html" class="break-box food" style="text-decoration:none; cursor:pointer;">
+            <h4>📋 Transactions</h4>
+            <p style="font-size:13px; color:rgba(255,255,255,0.5); margin-top:6px;">View & manage all entries</p>
+        </a>
+        <a href="insights.html" class="break-box health" style="text-decoration:none; cursor:pointer;">
+            <h4>📊 Insights</h4>
+            <p style="font-size:13px; color:rgba(255,255,255,0.5); margin-top:6px;">Spending analytics & charts</p>
+        </a>
+        <a href="budget.html" class="break-box household" style="text-decoration:none; cursor:pointer;">
+            <h4>💼 Budget</h4>
+            <p style="font-size:13px; color:rgba(255,255,255,0.5); margin-top:6px;">Set limits & track goals</p>
+        </a>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

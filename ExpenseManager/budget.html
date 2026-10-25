@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget — Expense Manager Pro</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="index.html" class="nav-brand">💰 Expense Manager</a>
+    <ul class="nav-links">
+        <li><a href="index.html"        class="nav-link">🏠 Home</a></li>
+        <li><a href="transactions.html" class="nav-link">📋 Transactions</a></li>
+        <li><a href="insights.html"     class="nav-link">📊 Insights</a></li>
+        <li><a href="budget.html"       class="nav-link active">💼 Budget</a></li>
+        <li><a href="calendar.html"     class="nav-link">📅 Calendar</a></li>
+        <li><a href="signup.html"       class="nav-link">🔐 Sign Up</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div style="text-align:center;"><span class="page-badge">Budget Control</span></div>
+    <h1>💼 Budget Planner</h1>
+    <p class="section-sub">Set limits & stay on track</p>
+
+    <!-- Summary Strip -->
+    <div class="summary">
+        <div class="box income">
+            <h3>💰 Monthly Income</h3>
+            <p id="bg-monthly-income">₹0</p>
+        </div>
+        <div class="box expense">
+            <h3>💸 Total Spent</h3>
+            <p id="bg-total-spent">₹0</p>
+        </div>
+        <div class="box balance">
+            <h3>🎯 Remaining</h3>
+            <p id="bg-remaining">₹0</p>
+        </div>
+    </div>
+
+    <!-- Overall Budget Alert -->
+    <div class="alert" id="bg-overall-alert" style="display:none;">
+        ⚠️ Warning: You have exceeded your monthly budget! Review your spending.
+    </div>
+
+    <hr class="divider">
+
+    <!-- Set Overall Budget -->
+    <h2>🎯 Set Monthly Budget</h2>
+    <p class="section-sub">Enter your total spending limit for the month</p>
+    <input type="number" id="input-monthly-budget" placeholder="Set overall monthly budget (₹)">
+
+    <div style="margin: 14px 0 6px;">
+        <div class="progress-label" id="bg-overall-label"><span>Used: ₹0</span><span>Budget: ₹0</span></div><div class="progress"><div class="progress-bar" id="bg-overall-progress" style="width: 0%;"></div></div><p id="bg-overall-text" style="font-size:13px; color:rgba(255,255,255,0.45); margin-top:6px;">0% used</p>
+    </div>
+
+    <button id="btn-save-budget">💾 Save Budget</button>
+
+    <hr class="divider">
+
+    <!-- Category Budgets -->
+    <h2>📂 Category Budgets</h2>
+    <p class="section-sub">Set individual limits per spending category</p>
+
+    <div class="budget-list" id="budget-category-list"></div>
+            <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:6px;">96% used — ₹350 left</p>
+        </div>
+
+        <div class="budget-item">
+            <div class="budget-item-header">
+                <span>🍔 Food</span>
+                <span>₹500 / ₹1,500</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" style="width: 33%; background: linear-gradient(90deg,#ff9800,#ffd740);"></div>
+            </div>
+            <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:6px;">33% used — ₹1,000 left</p>
+        </div>
+
+        <div class="budget-item">
+            <div class="budget-item-header">
+                <span>🛍️ Shopping</span>
+                <span>₹1,200 / ₹1,000</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar danger" style="width: 100%;"></div>
+            </div>
+            <p style="font-size:12px; color:#ff4d4d; margin-top:6px;">⚠️ Over limit by ₹200</p>
+        </div>
+
+        <div class="budget-item">
+            <div class="budget-item-header">
+                <span>🎬 Entertainment</span>
+                <span>₹199 / ₹500</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" style="width: 40%; background: linear-gradient(90deg,#e91e63,#ff5722);"></div>
+            </div>
+            <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:6px;">40% used — ₹301 left</p>
+        </div>
+
+        <div class="budget-item">
+            <div class="budget-item-header">
+                <span>💊 Health</span>
+                <span>₹300 / ₹1,000</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" style="width: 30%; background: linear-gradient(90deg,#4caf50,#00ffcc);"></div>
+            </div>
+            <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:6px;">30% used — ₹700 left</p>
+        </div>
+
+    </div>
+
+    <hr class="divider">
+
+    <!-- Add Category Budget -->
+    <h2>➕ Add Category Budget</h2>
+    <p class="section-sub">Track a new spending category</p>
+    <input type="text" id="input-cat-name" placeholder="Category Name (e.g. Travel)">
+    <input type="number" id="input-cat-limit" placeholder="Budget Limit (₹)">
+    <button id="btn-add-cat-budget">➕ Add Category Budget</button>
+
+    <hr class="divider">
+
+    <!-- Savings Goal -->
+    <h2>🏆 Savings Goal</h2>
+    <p class="section-sub">Set a target and track your progress</p>
+    <input type="text" id="input-goal-name" placeholder="Goal Name (e.g. New Laptop)">
+    <input type="number" id="input-goal-target" placeholder="Target Amount (₹)">
+    <input type="number" id="input-goal-saved" placeholder="Saved So Far (₹)">
+
+    <div style="margin: 14px 0 6px;">
+        <div class="progress-label" id="goal-label"><span>Saved: ₹0</span><span>Goal: ₹0</span></div><div class="progress"><div class="progress-bar" id="goal-progress" style="width: 0%;"></div></div><p id="goal-text" style="font-size:13px; color:rgba(255,255,255,0.45); margin-top:6px;"></p>
+    </div>
+
+    <button id="btn-save-goal">💾 Save Goal</button>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

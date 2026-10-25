@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — Expense Manager Pro</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="index.html" class="nav-brand">💰 Expense Manager</a>
+    <ul class="nav-links">
+        <li><a href="index.html"        class="nav-link">🏠 Home</a></li>
+        <li><a href="transactions.html" class="nav-link">📋 Transactions</a></li>
+        <li><a href="insights.html"     class="nav-link">📊 Insights</a></li>
+        <li><a href="budget.html"       class="nav-link">💼 Budget</a></li>
+        <li><a href="calendar.html"     class="nav-link">📅 Calendar</a></li>
+        <li><a href="signup.html"       class="nav-link">🔐 Sign Up</a></li>
+    </ul>
+</nav>
+
+<!-- Login Card -->
+<div class="auth-wrap">
+    <div style="text-align:center; margin-bottom: 8px;">
+        <span class="page-badge">Welcome Back</span>
+    </div>
+    <h1>Log In to Expense Manager</h1>
+    <p class="sub">Access your finances securely. 🔒</p>
+
+    <div class="input-group">
+        <label for="login-email">Email Address</label>
+        <input type="email" id="login-email" placeholder="you@example.com">
+    </div>
+
+    <div class="input-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="Enter your password">
+    </div>
+
+    <button id="btn-login" style="margin-top: 20px;">🔓 Log In</button>
+
+    <div class="or-divider">or</div>
+
+    <a href="index.html" class="btn" style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); font-weight: 500; font-size: 14px;">
+        👁️ Continue as Guest
+    </a>
+
+    <div class="auth-footer">
+        Don't have an account? <a href="signup.html">Sign Up</a>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

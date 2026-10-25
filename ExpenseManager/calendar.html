@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendar — Expense Manager Pro</title>
+<link rel="stylesheet" href="style.css">
+<style>
+
+/* ── Calendar Grid ── */
+.cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.cal-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+}
+.cal-nav-btn {
+    width: auto;
+    padding: 8px 18px;
+    font-size: 18px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    color: #fff;
+}
+.cal-nav-btn:hover { background: rgba(255,255,255,0.15); }
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+.cal-day-label {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    padding: 6px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.cal-cell {
+    min-height: 70px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 8px 6px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+.cal-cell:hover {
+    background: rgba(255,255,255,0.09);
+    border-color: rgba(255,255,255,0.2);
+}
+.cal-cell.empty {
+    background: transparent;
+    border-color: transparent;
+    cursor: default;
+}
+.cal-cell.today {
+    background: rgba(255,0,204,0.12);
+    border: 1px solid #ff00cc;
+}
+.cal-cell.has-loan {
+    border: 1px solid #ffaa00;
+    background: rgba(255,170,0,0.08);
+}
+.cal-cell.has-repayment {
+    border: 1px solid #ff4d4d;
+    background: rgba(255,77,77,0.08);
+}
+.cal-date {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    display: block;
+}
+.cal-cell.today .cal-date { color: #ff00cc; }
+.cal-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin: 3px 2px 0;
+}
+.dot-loan      { background: #ffaa00; }
+.dot-repayment { background: #ff4d4d; }
+.dot-income    { background: #00ffcc; }
+.dot-expense   { background: #ff6b6b; }
+
+/* ── Popup / Modal ── */
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(6px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.popup-box {
+    background: #1a2035;
+    border: 1px solid rgba(255,170,0,0.4);
+    border-radius: 20px;
+    padding: 36px 32px;
+    max-width: 430px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 60px rgba(255,170,0,0.15);
+    animation: popIn 0.35s ease;
+}
+@keyframes popIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+.popup-icon   { font-size: 52px; margin-bottom: 12px; }
+.popup-box h2 { font-size: 22px; color: #ffaa00; margin-bottom: 10px; }
+.popup-box p  { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+
+.popup-loan-list {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+.popup-loan-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.popup-loan-item:last-child { border-bottom: none; }
+.popup-loan-item .lname { color: rgba(255,255,255,0.75); }
+.popup-loan-item .lamt  { color: #ffaa00; font-weight: 600; }
+.popup-loan-item .ldate { color: rgba(255,255,255,0.4); font-size: 12px; }
+
+.popup-close {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(45deg, #ff00cc, #3333ff);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+.popup-close:hover { opacity: 0.88; }
+.popup-skip {
+    margin-top: 12px;
+    display: block;
+    color: rgba(255,255,255,0.35);
+    font-size: 13px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+}
+.popup-skip:hover { color: rgba(255,255,255,0.6); }
+
+/* ── Loan Form ── */
+.loan-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+@media(max-width:600px){ .loan-form-grid { grid-template-columns: 1fr; } }
+
+/* ── Loan List ── */
+.loan-list { margin-top: 6px; }
+.loan-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    border-left: 4px solid #ffaa00;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.loan-card.repaid { border-left-color: #00ffcc; opacity: 0.6; }
+.loan-card.overdue { border-left-color: #ff4d4d; background: rgba(255,77,77,0.07); }
+.loan-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.loan-info p  { font-size: 12px; color: rgba(255,255,255,0.45); }
+.loan-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.badge-active  { background: rgba(255,170,0,0.15); color: #ffaa00; }
+.badge-repaid  { background: rgba(0,255,204,0.12); color: #00ffcc; }
+.badge-overdue { background: rgba(255,77,77,0.15); color: #ff4d4d; }
+
+/* ── Selected Day Panel ── */
+.day-panel {
+    padding: 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-top: 20px;
+}
+.day-panel h3 { font-size: 16px; margin-bottom: 12px; }
+.day-event {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    margin-bottom: 6px;
+}
+.no-events { font-size: 13px; color: rgba(255,255,255,0.3); text-align: center; padding: 12px; }
+
+</style>
+</head>
+<body>
+
+<!-- ── Month-Start Loan Popup ── -->
+<div class="popup-overlay" id="loanPopup">
+    <div class="popup-box">
+        <div class="popup-icon">⚠️</div>
+        <h2>New Month — Loan Reminder!</h2>
+        <p>
+            A new month has started. You have <strong style="color:#ffaa00;">active loans</strong> that need your attention.
+            Please review before taking on any new debt.
+        </p>
+        <div class="popup-loan-list" id="popup-loan-list"></div>
+            <div class="popup-loan-item">
+                <span class="lname">📌 Business Loan</span>
+                <span class="lamt">₹25,000</span>
+                <span class="ldate">Due: 30 Apr</span>
+            </div>
+            <div class="popup-loan-item">
+                <span class="lname">📌 Priya Singh</span>
+                <span class="lamt">₹5,000</span>
+                <span class="ldate">Due: 10 Apr</span>
+            </div>
+        </div>
+        <p style="font-size:13px; color:#ff4d4d;">
+            💡 Total outstanding: <strong>₹40,000</strong> — Think carefully before giving new loans.
+        </p>
+        <button class="popup-close" onclick="closePopup()">✅ I Understand — Go to Calendar</button>
+        <button class="popup-skip" onclick="closePopup()">Remind me later</button>
+    </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="index.html" class="nav-brand">💰 Expense Manager</a>
+    <ul class="nav-links">
+        <li><a href="index.html"        class="nav-link">🏠 Home</a></li>
+        <li><a href="transactions.html" class="nav-link">📋 Transactions</a></li>
+        <li><a href="insights.html"     class="nav-link">📊 Insights</a></li>
+        <li><a href="budget.html"       class="nav-link">💼 Budget</a></li>
+        <li><a href="calendar.html"     class="nav-link active">📅 Calendar</a></li>
+        <li><a href="signup.html"       class="nav-link">🔐 Sign Up</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div style="text-align:center;"><span class="page-badge">Calendar</span></div>
+    <h1>📅 Finance Calendar</h1>
+    <p class="section-sub">Track loans, repayments & financial events</p>
+
+    <!-- ── Calendar ── -->
+    <div class="cal-header">
+        <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+        <h3 id="calTitle">April 2026</h3>
+        <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+    </div>
+
+    <div class="cal-grid" id="calGrid">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- Legend -->
+    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:14px; font-size:12px; color:rgba(255,255,255,0.5);">
+        <span><span class="cal-dot dot-loan"></span> Loan Given</span>
+        <span><span class="cal-dot dot-repayment"></span> Repayment Due</span>
+        <span><span class="cal-dot dot-income"></span> Income</span>
+        <span><span class="cal-dot dot-expense"></span> Expense</span>
+        <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(255,0,204,0.25);border:1px solid #ff00cc;display:inline-block;"></span> Today</span>
+    </div>
+
+    <!-- Selected Day Panel -->
+    <div class="day-panel" id="dayPanel" style="display:none;">
+        <h3 id="dayTitle">Events on —</h3>
+        <div id="dayEvents"></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── Add Loan ── -->
+    <h2>➕ Record a New Loan</h2>
+    <p class="section-sub">Add a loan you gave or received</p>
+    <div class="loan-form-grid">
+        <input type="text" id="loan-person" placeholder="Person / Purpose">
+        <input type="number" id="loan-amount" placeholder="Amount (₹)">
+        <input type="date" id="loan-date" placeholder="Loan Date">
+        <input type="date" id="loan-due" placeholder="Due / Repayment Date">
+        <input type="text" id="loan-type" placeholder="Type: Given / Taken">
+        <input type="text" id="loan-notes" placeholder="Notes (optional)">
+    </div>
+    <button id="btn-add-loan" style="margin-top:14px;">💾 Save Loan Record</button>
+
+    <hr class="divider">
+
+    <!-- ── Active Loans ── -->
+    <h2>📋 Active Loans</h2>
+    <p class="section-sub">Loans currently outstanding</p>
+
+    <div class="loan-list" id="active-loans-list"></div>
+
+        <div class="loan-card">
+            <div class="loan-info">
+                <h4>📌 Raj Kumar</h4>
+                <p>Loan Given • Due: 15 Apr 2026</p>
+            </div>
+            <div style="text-align:right;">
+                <p style="font-size:18px; font-weight:700; color:#ffaa00;">₹10,000</p>
+                <span class="loan-badge badge-active">Active</span>
+            </div>
+        </div>
+
+        <div class="loan-card">
+            <div class="loan-info">
+                <h4>🏦 Business Loan</h4>
+                <p>Loan Taken • Due: 30 Apr 2026</p>
+            </div>
+            <div style="text-align:right;">
+                <p style="font-size:18px; font-weight:700; color:#ffaa00;">₹25,000</p>
+                <span class="loan-badge badge-active">Active</span>
+            </div>
+        </div>
+
+        <div class="loan-card repaid">
+            <div class="loan-info">
+                <h4>📌 Amit Verma</h4>
+                <p>Loan Given • Repaid: 28 Mar 2026</p>
+            </div>
+            <div style="text-align:right;">
+                <p style="font-size:18px; font-weight:700; color:#00ffcc;">₹3,000</p>
+                <span class="loan-badge badge-repaid">Repaid</span>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── Loan Summary ── -->
+    <h2>📊 Loan Summary</h2>
+    <div class="summary">
+        <div class="box income">
+            <h3>💚 To Receive</h3>
+            <p id="loan-to-receive">₹0</p>
+        </div>
+        <div class="box expense">
+            <h3>❤️ To Repay</h3>
+            <p id="loan-to-repay">₹0</p>
+        </div>
+        <div class="box balance">
+            <h3>⚠️ Overdue</h3>
+            <p id="loan-overdue" style="color:#ff4d4d;">₹0</p>
+        </div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
