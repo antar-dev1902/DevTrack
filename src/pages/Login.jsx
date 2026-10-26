@@ -1,29 +1,51 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Icon from '../components/icons/ImageIcon.jsx';
+import { getProfileByIdOrEmail } from '../data/profileData.js';
 import '../styles/login.css';
 
-// DevTrack has no real backend/auth per project scope — there is no server
-// to authenticate against, so this form doesn't (and can't honestly pretend
-// to) validate credentials. What it CAN do is give the existing single
-// implicit-user experience (Profile/XP/Projects, all already working with
-// no login gate) a real entry point: submitting takes you into the app at
-// /profile, same as it already works today, just via a proper login screen
-// instead of a bare navbar link.
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const errs = {};
+    if (!email.trim()) {
+      errs.email = 'Email is required.';
+    } else if (!EMAIL_REGEX.test(email.trim())) {
+      errs.email = 'Please enter a valid email address.';
+    }
+
+    if (!password.trim()) {
+      errs.password = 'Password is required.';
+    } else if (password.length < 6) {
+      errs.password = 'Password must be at least 6 characters.';
+    }
+    return errs;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      setError('Enter an email and password to continue.');
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
-    setError('');
-    navigate('/profile');
+    setErrors({});
+
+    const user = getProfileByIdOrEmail(email.trim());
+    try {
+      localStorage.setItem('devtrack_current_user', JSON.stringify(user));
+      localStorage.setItem('devtrack_current_user_id', user.id);
+    } catch {
+      // storage unavailable
+    }
+
+    navigate(`/profile?userId=${user.id}`);
   };
 
   return (
@@ -36,11 +58,10 @@ export default function Login() {
           </span>
           <h2 className="login-title">Log in to DevTrack</h2>
           <p className="login-subtitle">
-            Track your skills, projects, and XP in one place. This is a demo login for the
-            evaluation build — no account or password is actually checked.
+            Track your skills, projects, and XP in one place. Enter your email and password to access your personalized profile.
           </p>
 
-          <form className="login-form" onSubmit={handleSubmit}>
+          <form className="login-form" onSubmit={handleSubmit} noValidate>
             <div>
               <label htmlFor="login-email">Email</label>
               <input
@@ -49,9 +70,17 @@ export default function Login() {
                 className="input"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+                }}
                 autoComplete="email"
               />
+              {errors.email && (
+                <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div>
@@ -62,12 +91,18 @@ export default function Login() {
                 className="input"
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) setErrors((prev) => ({ ...prev, password: '' }));
+                }}
                 autoComplete="current-password"
               />
+              {errors.password && (
+                <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
+                  {errors.password}
+                </p>
+              )}
             </div>
-
-            {error && <p className="login-error">{error}</p>}
 
             <button type="submit" className="btn btn-primary login-submit">
               Log In
@@ -76,7 +111,7 @@ export default function Login() {
           </form>
 
           <p className="login-footnote">
-            Don't have an account? <Link to="/signup" className="login-link">Sign up</Link>
+            Don&apos;t have an account? <Link to="/signup" className="login-link">Sign up</Link>
           </p>
         </div>
       </div>
