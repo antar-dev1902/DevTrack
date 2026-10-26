@@ -1,32 +1,43 @@
-import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Icon from '../components/icons/ImageIcon.jsx';
 import { useSelector } from 'react-redux';
-import { selectTotalXp, selectSkillXp, selectProjectXp, selectCompletedSkillCount, selectCompletedProjectsCount } from '../store/selectors.js';
+import {
+  selectTotalXp,
+  selectSkillXp,
+  selectProjectXp,
+  selectCompletedSkillCount,
+  selectCompletedProjectsCount,
+} from '../store/selectors.js';
 import ProfileCard from '../components/ProfileCard.jsx';
 import Leaderboard from '../components/Leaderboard.jsx';
-import profileData, { getProfileByIdOrEmail } from '../data/profileData.js';
+import { useAuth } from '../context/AuthContext.js';
 import { skills } from '../data/roadmapData.js';
 import '../styles/profile.css';
 
 const TOTAL_SKILLS = Object.keys(skills).length;
 
 export default function Profile() {
-  const [searchParams] = useSearchParams();
-  const userId = searchParams.get('userId');
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const profile = useMemo(() => {
-    if (userId) return getProfileByIdOrEmail(userId);
-    try {
-      const stored = typeof window !== 'undefined' ? localStorage.getItem('devtrack_current_user') : null;
-      if (stored) return JSON.parse(stored);
-      const storedId = typeof window !== 'undefined' ? localStorage.getItem('devtrack_current_user_id') : null;
-      if (storedId) return getProfileByIdOrEmail(storedId);
-    } catch {
-      // storage unavailable
+  // Route protection: redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { replace: true });
     }
-    return profileData;
-  }, [userId]);
+  }, [user, navigate]);
+
+  // Authorization check: prevent unauthorized profile access via URL manipulation
+  useEffect(() => {
+    if (user) {
+      const paramUserId = searchParams.get('userId');
+      if (paramUserId && paramUserId !== user.id) {
+        setSearchParams({ userId: user.id }, { replace: true });
+      }
+    }
+  }, [user, searchParams, setSearchParams]);
 
   const totalXp = useSelector(selectTotalXp);
   const skillXp = useSelector(selectSkillXp);
@@ -34,6 +45,15 @@ export default function Profile() {
   const completedSkillCount = useSelector(selectCompletedSkillCount);
   const completedProjectsCount = useSelector(selectCompletedProjectsCount);
   const journeyProgress = Math.round((completedSkillCount / TOTAL_SKILLS) * 100);
+
+  if (!user) {
+    return null;
+  }
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <div className="profile-page section">
@@ -49,15 +69,16 @@ export default function Profile() {
 
         <div className="profile-grid">
           <ProfileCard
-            profile={profile}
+            profile={user}
             journeyProgress={journeyProgress}
             totalXp={totalXp}
             skillXp={skillXp}
             projectXp={projectXp}
             completedSkillCount={completedSkillCount}
             completedProjectsCount={completedProjectsCount}
+            onLogout={handleLogout}
           />
-          <Leaderboard currentUserXp={totalXp} currentUserName={profile.name} />
+          <Leaderboard currentUserXp={totalXp} currentUserName={user.name} />
         </div>
       </div>
     </div>

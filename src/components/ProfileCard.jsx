@@ -10,6 +10,7 @@ export default function ProfileCard({
   projectXp,
   completedSkillCount,
   completedProjectsCount,
+  onLogout,
 }) {
   return (
     <div className="profile-card card">
@@ -68,6 +69,12 @@ export default function ProfileCard({
           <Icon name="linkedin" size={15} />
           LinkedIn
         </a>
+        {onLogout && (
+          <button type="button" onClick={onLogout} className="btn btn-secondary btn-small">
+            <Icon name="lock" size={15} />
+            Log Out
+          </button>
+        )}
       </div>
     </div>
   );

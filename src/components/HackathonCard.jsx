@@ -1,15 +1,25 @@
 import { Link } from 'react-router-dom';
 import Icon from './icons/ImageIcon.jsx';
-
-export function daysRemaining(deadline) {
-  const diff = new Date(deadline).setHours(0, 0, 0, 0) - new Date().setHours(0, 0, 0, 0);
-  return Math.round(diff / 86400000);
-}
+import { daysRemaining, getHackathonStatus } from '../utils/hackathonUtils.js';
 
 export default function HackathonCard({ hackathon }) {
   const days = daysRemaining(hackathon.deadline);
-  const countdownLabel =
-    days > 0 ? `${days} day${days === 1 ? '' : 's'} remaining` : days === 0 ? 'Closes today' : 'Closed';
+  const status = getHackathonStatus(hackathon);
+
+  let countdownLabel = 'Closed';
+  if (status === 'unverified') {
+    countdownLabel = 'Date unverified';
+  } else if (days !== null) {
+    if (days > 0) {
+      countdownLabel = `${days} day${days === 1 ? '' : 's'} remaining`;
+    } else if (days === 0) {
+      countdownLabel = 'Closes today';
+    } else {
+      countdownLabel = 'Closed';
+    }
+  }
+
+  const isUrgent = days !== null && days >= 0 && days <= 3;
 
   return (
     <div className="hackathon-card card card-hover fade-up">
@@ -30,7 +40,7 @@ export default function HackathonCard({ hackathon }) {
       <p className="hackathon-card-desc">{hackathon.description}</p>
 
       <div className="hackathon-card-meta">
-        <div className={`hackathon-countdown ${days <= 3 ? 'hackathon-countdown-urgent' : ''}`}>
+        <div className={`hackathon-countdown ${isUrgent ? 'hackathon-countdown-urgent' : ''}`}>
           <Icon name="clock" size={14} />
           {countdownLabel}
         </div>

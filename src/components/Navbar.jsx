@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Icon from './icons/ImageIcon.jsx';
+import { useAuth } from '../context/AuthContext.js';
 
 const links = [
   { to: '/', label: 'Home' },
@@ -12,6 +13,14 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    setOpen(false);
+    navigate('/login');
+  };
 
   return (
     <header className="navbar">
@@ -35,14 +44,27 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
-          <NavLink
-            to="/login"
-            className="navbar-login-link"
-            onClick={() => setOpen(false)}
-          >
-            <Icon name="lock" size={14} />
-            Log In
-          </NavLink>
+
+          {isAuthenticated ? (
+            <button
+              type="button"
+              className="navbar-login-link"
+              onClick={handleLogout}
+              style={{ border: 'none', cursor: 'pointer', font: 'inherit' }}
+            >
+              <Icon name="lock" size={14} />
+              Log Out
+            </button>
+          ) : (
+            <NavLink
+              to="/login"
+              className="navbar-login-link"
+              onClick={() => setOpen(false)}
+            >
+              <Icon name="lock" size={14} />
+              Log In
+            </NavLink>
+          )}
         </nav>
 
         <button

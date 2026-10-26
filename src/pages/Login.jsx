@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Icon from '../components/icons/ImageIcon.jsx';
-import { getProfileByIdOrEmail } from '../data/profileData.js';
+import { useAuth } from '../context/AuthContext.js';
+import { EMAIL_REGEX } from '../services/authService.js';
 import '../styles/login.css';
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validate = () => {
     const errs = {};
@@ -28,24 +29,30 @@ export default function Login() {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
     setErrors({});
+    setIsSubmitting(true);
 
-    const user = getProfileByIdOrEmail(email.trim());
     try {
-      localStorage.setItem('devtrack_current_user', JSON.stringify(user));
-      localStorage.setItem('devtrack_current_user_id', user.id);
-    } catch {
-      // storage unavailable
+      const result = await login({ email: email.trim(), password });
+      if (result.success && result.user) {
+        navigate(`/profile?userId=${result.user.id}`);
+      } else {
+        setErrors(result.errors || { form: 'Authentication failed. Please try again.' });
+      }
+    } catch (err) {
+      setErrors({ form: err.message || 'An error occurred during login. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    navigate(`/profile?userId=${user.id}`);
   };
 
   return (
@@ -62,6 +69,12 @@ export default function Login() {
           </p>
 
           <form className="login-form" onSubmit={handleSubmit} noValidate>
+            {errors.form && (
+              <p className="login-error" style={{ marginBottom: '12px' }}>
+                {errors.form}
+              </p>
+            )}
+
             <div>
               <label htmlFor="login-email">Email</label>
               <input
@@ -72,9 +85,10 @@ export default function Login() {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+                  if (errors.email || errors.form) setErrors((prev) => ({ ...prev, email: '', form: '' }));
                 }}
                 autoComplete="email"
+                disabled={isSubmitting}
               />
               {errors.email && (
                 <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
@@ -93,9 +107,10 @@ export default function Login() {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  if (errors.password) setErrors((prev) => ({ ...prev, password: '' }));
+                  if (errors.password || errors.form) setErrors((prev) => ({ ...prev, password: '', form: '' }));
                 }}
                 autoComplete="current-password"
+                disabled={isSubmitting}
               />
               {errors.password && (
                 <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
@@ -104,8 +119,8 @@ export default function Login() {
               )}
             </div>
 
-            <button type="submit" className="btn btn-primary login-submit">
-              Log In
+            <button type="submit" className="btn btn-primary login-submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Logging In...' : 'Log In'}
               <Icon name="arrowRight" size={15} />
             </button>
           </form>

@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import Icon from '../components/icons/ImageIcon.jsx';
 import hackathonsData from '../data/hackathonsData.js';
-import { daysRemaining } from '../components/HackathonCard.jsx';
+import { daysRemaining, getHackathonStatus } from '../utils/hackathonUtils.js';
 import '../styles/hackerHub.css';
 
 export default function HackathonDetails() {
@@ -21,6 +21,21 @@ export default function HackathonDetails() {
   }
 
   const days = daysRemaining(hackathon.deadline);
+  const status = getHackathonStatus(hackathon);
+  const isClosed = status === 'expired' || (days !== null && days < 0);
+
+  let countdownLabel = 'Closed';
+  if (status === 'unverified') {
+    countdownLabel = 'Date unverified';
+  } else if (days !== null) {
+    if (days > 0) {
+      countdownLabel = `${days} day${days === 1 ? '' : 's'} remaining`;
+    } else if (days === 0) {
+      countdownLabel = 'Closes today';
+    } else {
+      countdownLabel = 'Closed';
+    }
+  }
 
   return (
     <div className="hackathon-details-page section">
@@ -69,7 +84,7 @@ export default function HackathonDetails() {
               <h4>Countdown</h4>
               <div className="hackathon-countdown-large">
                 <Icon name="clock" size={16} />
-                {days > 0 ? `${days} days remaining` : days === 0 ? 'Closes today' : 'Closed'}
+                {countdownLabel}
               </div>
             </div>
 
@@ -97,8 +112,13 @@ export default function HackathonDetails() {
               </div>
             </div>
 
-            <a href={hackathon.website} target="_blank" rel="noreferrer" className="btn btn-primary">
-              Apply / Register
+            <a
+              href={hackathon.registrationUrl || hackathon.website}
+              target="_blank"
+              rel="noreferrer"
+              className={`btn ${isClosed ? 'btn-secondary' : 'btn-primary'}`}
+            >
+              {isClosed ? 'Registration Closed' : 'Apply / Register'}
               <Icon name="external" size={15} />
             </a>
           </div>

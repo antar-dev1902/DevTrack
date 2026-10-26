@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Icon from '../components/icons/ImageIcon.jsx';
+import { useAuth } from '../context/AuthContext.js';
+import { EMAIL_REGEX } from '../services/authService.js';
 import '../styles/login.css';
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validate = () => {
     const errs = {};
@@ -39,42 +41,36 @@ export default function Signup() {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
     setErrors({});
-
-    const formattedName = name.trim();
-    const initials = formattedName.charAt(0).toUpperCase() || 'U';
-    const userId = `u-${Date.now()}`;
-    const newUser = {
-      id: userId,
-      email: email.trim(),
-      name: formattedName,
-      developerPath: 'Frontend Developer',
-      bio: `${formattedName}’s developer journey — learning and building on DevTrack.`,
-      avatarInitials: initials,
-      skills: ['React', 'JavaScript', 'HTML', 'CSS'],
-      hackathonsCount: 0,
-      github: 'https://github.com/',
-      linkedin: 'https://linkedin.com/',
-    };
+    setIsSubmitting(true);
 
     try {
-      const existing = JSON.parse(localStorage.getItem('devtrack_users') || '[]');
-      existing.push(newUser);
-      localStorage.setItem('devtrack_users', JSON.stringify(existing));
-      localStorage.setItem('devtrack_current_user', JSON.stringify(newUser));
-      localStorage.setItem('devtrack_current_user_id', newUser.id);
-    } catch {
-      // storage unavailable
-    }
+      const result = await signup({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        confirmPassword,
+      });
 
-    navigate(`/profile?userId=${newUser.id}`);
+      if (result.success && result.user) {
+        navigate(`/profile?userId=${result.user.id}`);
+      } else {
+        setErrors(result.errors || { form: 'Registration failed. Please check your information.' });
+      }
+    } catch (err) {
+      setErrors({ form: err.message || 'An error occurred during registration. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -91,6 +87,12 @@ export default function Signup() {
           </p>
 
           <form className="login-form" onSubmit={handleSubmit} noValidate>
+            {errors.form && (
+              <p className="login-error" style={{ marginBottom: '12px' }}>
+                {errors.form}
+              </p>
+            )}
+
             <div>
               <label htmlFor="signup-name">Full name</label>
               <input
@@ -101,9 +103,10 @@ export default function Signup() {
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
-                  if (errors.name) setErrors((prev) => ({ ...prev, name: '' }));
+                  if (errors.name || errors.form) setErrors((prev) => ({ ...prev, name: '', form: '' }));
                 }}
                 autoComplete="name"
+                disabled={isSubmitting}
               />
               {errors.name && (
                 <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
@@ -122,9 +125,10 @@ export default function Signup() {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+                  if (errors.email || errors.form) setErrors((prev) => ({ ...prev, email: '', form: '' }));
                 }}
                 autoComplete="email"
+                disabled={isSubmitting}
               />
               {errors.email && (
                 <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
@@ -143,9 +147,10 @@ export default function Signup() {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  if (errors.password) setErrors((prev) => ({ ...prev, password: '' }));
+                  if (errors.password || errors.form) setErrors((prev) => ({ ...prev, password: '', form: '' }));
                 }}
                 autoComplete="new-password"
+                disabled={isSubmitting}
               />
               {errors.password && (
                 <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
@@ -164,9 +169,10 @@ export default function Signup() {
                 value={confirmPassword}
                 onChange={(e) => {
                   setConfirmPassword(e.target.value);
-                  if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: '' }));
+                  if (errors.confirmPassword || errors.form) setErrors((prev) => ({ ...prev, confirmPassword: '', form: '' }));
                 }}
                 autoComplete="new-password"
+                disabled={isSubmitting}
               />
               {errors.confirmPassword && (
                 <p className="login-error" style={{ marginTop: '4px', marginBottom: 0 }}>
@@ -175,8 +181,8 @@ export default function Signup() {
               )}
             </div>
 
-            <button type="submit" className="btn btn-primary login-submit">
-              Create Account
+            <button type="submit" className="btn btn-primary login-submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating Account...' : 'Create Account'}
               <Icon name="arrowRight" size={15} />
             </button>
           </form>
